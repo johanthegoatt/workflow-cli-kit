@@ -45,9 +45,9 @@ function checkCommand(args) {
     const token = args[index];
     if (token === "--min-score") {
       index += 1;
-      minScore = Number(args[index] || 0);
-      if (Number.isNaN(minScore)) {
-        throw new Error("--min-score must be numeric.");
+      minScore = Number(args[index]);
+      if (!Number.isFinite(minScore) || minScore < 0 || minScore > 100 || args[index] === undefined) {
+        throw new Error("--min-score must be a number from 0 to 100.");
       }
       continue;
     }
@@ -73,8 +73,12 @@ function checkCommand(args) {
     console.log(`README score: ${report.score}`);
     console.log(`Required sections present: ${report.present}`);
     console.log(`Pass threshold (${report.minScore}): ${report.pass ? "yes" : "no"}`);
-    if (report.missing.length > 0) {
-      console.log(`Missing: ${report.missing.join(", ")}`);
+    const notEmpty = report.missing.filter((section) => !report.empty.includes(section));
+    if (notEmpty.length > 0) {
+      console.log(`Missing: ${notEmpty.join(", ")}`);
+    }
+    if (report.empty.length > 0) {
+      console.log(`Heading but nothing under it: ${report.empty.join(", ")}`);
     }
   }
 
