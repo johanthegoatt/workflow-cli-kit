@@ -1,10 +1,14 @@
 {
   "name": "workflow-cli-kit",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "private": true,
   "type": "module",
   "scripts": {
     "start": "node src/cli.js",
-    "test": "node --test tests/*.test.js"
+    "test": "node --test"
+  },
+  "description": "Scaffold a runbook from a project's own package.json and check READMEs and runbooks by their real headings.",
+  "engines": {
+    "node": ">=18"
   }
 }
