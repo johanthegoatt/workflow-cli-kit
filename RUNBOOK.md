@@ -4,30 +4,36 @@
 
 Scaffold project runbooks and enforce README quality standards from the terminal.
 
-## Setup
+## Environment
+
+- cwd: workflow-cli-kit
+- node: 18+ (uses `node:test` and no dependencies)
+
+## Commands
+
+### Scaffold a runbook from a project's package.json
 
 ```powershell
-cd workflow-cli-kit
-npm install
+npm start -- scaffold demo-project ../some-project --out RUNBOOK.generated.md
 ```
 
-## Scaffold a Runbook
+### Check README quality
 
 ```powershell
-cd workflow-cli-kit
-npm start -- scaffold demo-project . --out RUNBOOK.generated.md
-```
-
-## Check README Quality
-
-```powershell
-cd workflow-cli-kit
 npm start -- check README.md --min-score 80 --json
 ```
 
-## Verify
+### Lint a runbook
 
 ```powershell
-cd workflow-cli-kit
-npm test
+npm start -- lint-runbook RUNBOOK.md
 ```
+
+## Verification
+
+```powershell
+npm test
+npm start -- lint-runbook RUNBOOK.md
+```
+
+Both exit with code 0.

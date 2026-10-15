@@ -2,7 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 
 import { evaluateReadme } from "./readmeCheck.js";
-import { lintRunbook, scaffoldRunbook } from "./runbook.js";
+import { detectProject, lintRunbook, scaffoldRunbook } from "./runbook.js";
 
 function usage() {
   console.log("Usage:");
@@ -24,8 +24,14 @@ function scaffoldCommand(args) {
     positional.push(token);
   }
 
-  const [projectName = "new-project", cwd = "."] = positional;
-  const text = scaffoldRunbook({ projectName, cwd });
+  const [projectName, cwd = "."] = positional;
+  const dir = path.resolve(process.cwd(), cwd);
+  if (!fs.existsSync(dir)) {
+    throw new Error(`Folder not found: ${cwd}`);
+  }
+  // Use the project's own package manager and scripts when it has a package.json.
+  const project = fs.existsSync(path.join(dir, "package.json")) ? detectProject(dir) : null;
+  const text = scaffoldRunbook({ projectName, cwd, project });
 
   if (outPath) {
     const absolute = path.resolve(process.cwd(), outPath);
@@ -114,6 +120,9 @@ function lintRunbookCommand(args) {
     console.log(`Runbook lint: ${report.pass ? "pass" : "fail"}`);
     if (report.missing.length > 0) {
       console.log(`Missing headings: ${report.missing.join(", ")}`);
+    }
+    if (report.empty.length > 0) {
+      console.log(`Heading but nothing under it: ${report.empty.join(", ")}`);
     }
   }
 
